@@ -10,9 +10,8 @@ var randomAnswer = [Int]()
 var gameCount: Int = 9
 
 struct NumberBaseball{
-    // 게임 메뉴 및 사용자 입력 메세지 구현
-    let gameMenuMessage = ["1. 게임시작\n", "2. 게임종료\n", "원하는 기능을 선택해주세요 : "]
-    let inputMessage = ""
+    let gameMenuMessages = ["1. 게임시작\n", "2. 게임종료\n", "원하는 기능을 선택해주세요 : "]
+    let gameInputMessages = ["숫자 3개를 띄어쓰기로 구분하여 입력해주세요.\n", "중복 숫자는 허용하지 않습니다.\n", "입력 : "]
     
     func generateRandomNumber() -> [Int] {
         var result = [Int]()
@@ -37,8 +36,8 @@ struct NumberBaseball{
         return [strike, ball]
     }
     
-    func getGameMenuInput() -> String? {
-        for message in gameMenuMessage {
+    func getUserInput(toPrint: [String]) -> String? {
+        for message in toPrint {
             print(message, terminator: "")
         }
         
@@ -74,10 +73,8 @@ struct NumberBaseball{
         let userInput = generateRandomNumber()
         randomAnswer = generateRandomNumber()
         
-        getGameMenuInput()
-        // 입력 메세지 출력
-        print(inputMessage)
-        // get userNumberInput
+        getUserInput(toPrint: gameMenuMessages)
+        getUserInput(toPrint: gameInputMessages)
         // validation check -> boolean
         // valid하면 게임실행하고 아니면 다시 입력
         let gameResult: [Int] = getResult(userInput: input, answer: randomAnswer)
