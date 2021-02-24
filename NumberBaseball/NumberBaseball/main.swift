@@ -9,6 +9,10 @@ import Foundation
 var randomAnswer = [Int]()
 var gameCount: Int = 9
 
+enum InputType {
+    case menuInput, gameInput
+}
+
 struct NumberBaseball{
     let gameMenuMessages = ["1. 게임시작\n", "2. 게임종료\n", "원하는 기능을 선택해주세요 : "]
     let gameInputMessages = ["숫자 3개를 띄어쓰기로 구분하여 입력해주세요.\n", "중복 숫자는 허용하지 않습니다.\n", "입력 : "]
@@ -44,14 +48,52 @@ struct NumberBaseball{
         return readLine()
     }
     
-    func checkValidation(userInput: String) -> Bool {
-        // 문자열인지 확인
+    func checkValidation(inputType: InputType, userInput: String?) -> [Int] {
+        let inputErrorMessage = "입력이 잘못되었습니다"
         
-        // 중복여부 & 3개 입력받았는지 확인
-        if userInput.count != 3 || Array(Set(userInput)).count != 3 {
-            return false
+        switch inputType {
+        case InputType.menuInput:
+            // 숫자 입력 체크
+            guard let _userInput = Int(userInput!) else {
+                print(inputErrorMessage)
+                return checkValidation(inputType: InputType.menuInput, userInput: getUserInput(toPrint: gameMenuMessages))
+            }
+            switch _userInput {
+            case 1: return checkValidation(inputType: InputType.gameInput, userInput: getUserInput(toPrint: gameInputMessages))
+            case 2: exit(0)
+            default:
+                print(inputErrorMessage)
+                return checkValidation(inputType: InputType.menuInput, userInput: getUserInput(toPrint: gameMenuMessages))
+            }
+        
+        case InputType.gameInput:
+            guard let _userInput = userInput else {
+                print(inputErrorMessage)
+                return checkValidation(inputType: InputType.gameInput, userInput: getUserInput(toPrint: gameInputMessages))
+            }
+            let inputArray = _userInput.components(separatedBy: " ")
+            
+            // 입력 개수 체크
+            if inputArray.count != 3 {
+                print(inputErrorMessage)
+                return checkValidation(inputType: InputType.gameInput, userInput: getUserInput(toPrint: gameInputMessages))
+            }
+            
+            for input in inputArray {
+                // 숫자 입력 체크
+                guard let number = Int(input) else {
+                    print(inputErrorMessage)
+                    return checkValidation(inputType: InputType.gameInput, userInput: getUserInput(toPrint: gameInputMessages))
+                }
+                // 숫자 범위 체크
+                if number < 1 || number > 9 {
+                    print(inputErrorMessage)
+                    return checkValidation(inputType: InputType.gameInput, userInput: getUserInput(toPrint: gameInputMessages))
+                }
+            }
+            
+            return inputArray.map { Int($0)! }
         }
-        return true
     }
     
     func printGameResult(userInput: [Int], gameResult: [Int], gameCount: Int) {
