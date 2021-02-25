@@ -93,33 +93,37 @@ struct NumberBaseball{
         }
     }
     
-    func printGameResult(userInput: [Int], gameResult: [Int], gameCount: Int) {
-        print("임의의 수: \(userInput[0]) \(userInput[1]) \(userInput[2])")
-        if gameCount == 0 {
-            print("컴퓨터 승리...!")
-        }
+    func printGameResult(gameResult: [Int]) {
         print("\(gameResult[0]) 스트라이크, \(gameResult[1]) 볼")
+        
         if gameResult[0] == 3 {
             print("사용자 승리!")
+            gameCount = 9
         } else {
         print("남은 기회 : \(gameCount)")
+        }
+        
+        if gameCount == 0 {
+            print("컴퓨터 승리...!")
+            gameCount = 9
         }
     }
     
     func startGame() {
-        gameCount -= 1
-        let input = generateRandomNumber()
-        let userInput = generateRandomNumber()
-        randomAnswer = generateRandomNumber()
+        let userInput: [Int]
         
-        checkValidation(inputType: InputType.menuInput, userInput: getUserInput(toPrint: gameMenuMessages))
-        checkValidation(inputType: InputType.gameInput, userInput: getUserInput(toPrint: gameInputMessages))
-        
-        let gameResult: [Int] = getResult(userInput: input, answer: randomAnswer)
-        printGameResult(userInput: userInput, gameResult: gameResult, gameCount: gameCount)
-        if gameCount > 0 {
-            startGame()
+        if gameCount == 9 {
+            userInput = checkValidation(inputType: InputType.menuInput, userInput: getUserInput(toPrint: gameMenuMessages))
+            randomAnswer = generateRandomNumber()
+        } else {
+            userInput = checkValidation(inputType: InputType.gameInput, userInput: getUserInput(toPrint: gameInputMessages))
         }
+        
+        gameCount -= 1
+        let gameResult: [Int] = getResult(userInput: userInput, answer: randomAnswer)
+        printGameResult(gameResult: gameResult)
+
+        startGame()
     }
 }
 
