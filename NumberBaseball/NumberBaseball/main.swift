@@ -9,11 +9,12 @@ import Foundation
 var computerAnswers: [Int] = [Int]()
 var gameCount: Int = 9
 
-enum Message: String {
-    case gameMenu = "1. 게임시작\n2. 게임종료\n원하는 기능을 선택해주세요 : "
-}
-
 struct NumberBaseball {
+    enum Message: String {
+        case gameMenu = "1. 게임시작\n2. 게임종료\n원하는 기능을 선택해주세요 : "
+        case inputAnswer = "숫자 3개를 띄어쓰기로 구분하여 입력해주세요.\n중복 숫자는 허용하지 않습니다.\n입력 : "
+    }
+    
     func isUserWin(strikeCount: Int) -> Bool { return strikeCount == 3 }
     
     func isComputerWin() -> Bool { return gameCount == 0 }
@@ -30,8 +31,8 @@ struct NumberBaseball {
         return randomAnswers
     }
     
-    func getUserInput(toPrint: String) -> String? {
-        print(toPrint, terminator: "")
+    func getUserInput(toPrint: Message) -> String? {
+        print(toPrint.rawValue, terminator: "")
         return readLine()
     }
 
@@ -71,9 +72,11 @@ struct NumberBaseball {
         let userAnswers: [Int] = generateRandomAnswers()
         
         if gameCount == 9 {
-            getUserInput(toPrint: Message.gameMenu.rawValue)
+            getUserInput(toPrint: Message.gameMenu)
             computerAnswers = generateRandomAnswers()
         }
+        
+        getUserInput(toPrint: Message.inputAnswer)
         
         gameCount -= 1
         let gameResult: [Int] = getGameResult(userAnswers)
