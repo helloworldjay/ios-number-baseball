@@ -9,10 +9,34 @@ import Foundation
 var computerAnswers: [Int] = [Int]()
 var gameCount: Int = 9
 
+func isDuplicated(_ array: [Int]) -> Bool {
+    var _array: [Int] = array
+    
+    for _ in 1...array.count {
+        let element = _array.removeFirst()
+        if _array.contains(element) { return true }
+    }
+    
+    return false
+}
+
+func getIntArray(from: String?, separatedBy: String) -> [Int]? {
+    guard let _from : String = from else { return nil }
+    var result: [Int] = [Int]()
+    
+    for element in _from.components(separatedBy: separatedBy) {
+        guard let integer = Int(element) else { return nil }
+        result.append(integer)
+    }
+    
+    return result
+}
+
 struct NumberBaseball {
     enum Message: String {
         case gameMenu = "1. 게임시작\n2. 게임종료\n원하는 기능을 선택해주세요 : "
         case inputAnswer = "숫자 3개를 띄어쓰기로 구분하여 입력해주세요.\n중복 숫자는 허용하지 않습니다.\n입력 : "
+        case inputError = "입력이 잘못되었습니다"
     }
     
     func isUserWin(strikeCount: Int) -> Bool { return strikeCount == 3 }
@@ -34,6 +58,29 @@ struct NumberBaseball {
     func getUserInput(toPrint: Message) -> String? {
         print(toPrint.rawValue, terminator: "")
         return readLine()
+    }
+    
+    func isValidMenuInput(userInput: String?) -> Bool {
+        guard let _userInput: String = userInput else { return false }
+        guard let userMenuInput: Int = Int(_userInput) else { return false }
+        
+        switch userMenuInput {
+        case 1: return true
+        case 2: exit(0)
+        default: return false
+        }
+    }
+    
+    func isValidGameInput(userInput: String?) -> Bool {
+        guard let userGameInputs: [Int] = getIntArray(from: userInput, separatedBy: " ") else { return false }
+        
+        if userGameInputs.count != 3 { return false }
+        for userGameInput in userGameInputs {
+            if !(1...9).contains(userGameInput) { return false }
+        }
+        if isDuplicated(userGameInputs) { return false }
+        
+        return true
     }
 
     func getGameResult(_ userAnswers: [Int]) -> [Int] {
