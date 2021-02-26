@@ -9,8 +9,13 @@ import Foundation
 var computerAnswers: [Int] = [Int]()
 var gameCount: Int = 9
 
+enum Message: String {
+    case gameMenu = "1. 게임시작\n2. 게임종료\n원하는 기능을 선택해주세요 : "
+}
+
 struct NumberBaseball {
     func isUserWin(strikeCount: Int) -> Bool { return strikeCount == 3 }
+    
     func isComputerWin() -> Bool { return gameCount == 0 }
     
     func generateRandomAnswers() -> [Int] {
@@ -25,6 +30,11 @@ struct NumberBaseball {
         return randomAnswers
     }
     
+    func getUserInput(toPrint: String) -> String? {
+        print(toPrint, terminator: "")
+        return readLine()
+    }
+
     func getGameResult(_ userAnswers: [Int]) -> [Int] {
         var strikeCount: Int = 0
         var ballCount: Int = 0
@@ -61,6 +71,7 @@ struct NumberBaseball {
         let userAnswers: [Int] = generateRandomAnswers()
         
         if gameCount == 9 {
+            getUserInput(toPrint: Message.gameMenu.rawValue)
             computerAnswers = generateRandomAnswers()
         }
         
